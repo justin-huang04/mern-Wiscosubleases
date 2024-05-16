@@ -34,6 +34,14 @@ const listingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    sharedRoom: {
+      type: Boolean,
+      required: true,
+    },
+    ownRoom: {
+      type: Boolean,
+      required: true,
+    },
     furnished: {
       type: Boolean,
       required: true,
