@@ -18,11 +18,7 @@ const listingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    negotiable: {
-      type: Boolean,
-      required: true,
-    },
-    roommates: {
+    discountPrice: {
       type: Number,
       required: true,
     },
@@ -30,16 +26,8 @@ const listingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    contact: {
-      type: String,
-      required: true,
-    },
-    sharedRoom: {
-      type: Boolean,
-      required: true,
-    },
-    ownRoom: {
-      type: Boolean,
+    bedrooms: {
+      type: Number,
       required: true,
     },
     furnished: {
