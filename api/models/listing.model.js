@@ -30,8 +30,9 @@ const listingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    furnished: {
-      type: Boolean,
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Any Gender"],
       required: true,
     },
     parking: {

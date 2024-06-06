@@ -8,7 +8,7 @@ export default function Search() {
     searchTerm: "",
     type: "all",
     parking: false,
-    furnished: false,
+    gender: "Any Gender",
     offer: false,
     sort: "created_at",
     order: "desc",
@@ -23,8 +23,8 @@ export default function Search() {
     const searchTermFromUrl = urlParams.get("searchTerm");
     const typeFromUrl = urlParams.get("type");
     const parkingFromUrl = urlParams.get("parking");
-    const furnishedFromUrl = urlParams.get("furnished");
-    const offerFromUrl = urlParams.get("offer");
+    const furnishedFromUrl = urlParams.get("gender");
+    const offerFromUrl = urlParams.get("priceNegotiable");
     const sortFromUrl = urlParams.get("sort");
     const orderFromUrl = urlParams.get("order");
 
@@ -79,11 +79,7 @@ export default function Search() {
       setSidebardata({ ...sidebardata, searchTerm: e.target.value });
     }
 
-    if (
-      e.target.id === "parking" ||
-      e.target.id === "furnished" ||
-      e.target.id === "offer"
-    ) {
+    if (e.target.id === "parking" || e.target.id === "priceNegotiable") {
       setSidebardata({
         ...sidebardata,
         [e.target.id]:

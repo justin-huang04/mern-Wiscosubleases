@@ -72,10 +72,10 @@ export const getListings = async (req, res, next) => {
       priceNegotiable = { $in: [false, true] };
     }
 
-    let furnished = req.query.furnished;
+    let gender = req.query.gender;
 
-    if (furnished === undefined || furnished === "false") {
-      furnished = { $in: [false, true] };
+    if (gender === undefined || gender === "Any Gender") {
+      gender = { $in: ["Any Gender", "Male", "Female"] };
     }
 
     let parking = req.query.parking;
@@ -99,7 +99,7 @@ export const getListings = async (req, res, next) => {
     const listings = await Listing.find({
       name: { $regex: searchTerm, $options: "i" },
       priceNegotiable,
-      furnished,
+      gender,
       parking,
       type,
     })

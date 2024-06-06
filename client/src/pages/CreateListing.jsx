@@ -25,7 +25,7 @@ export default function CreateListing() {
     discountPrice: 0,
     priceNegotiable: false,
     parking: false,
-    furnished: false,
+    gender: "Any Gender",
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -93,32 +93,29 @@ export default function CreateListing() {
   };
 
   const handleChange = (e) => {
-    if (e.target.id === "ownRoom" || e.target.id === "sharedRoom") {
-      setFormData({
-        ...formData,
-        type: e.target.id,
-      });
-    }
+    const { id, value, type, checked } = e.target;
 
-    if (
-      e.target.id === "parking" ||
-      e.target.id === "furnished" ||
-      e.target.id === "priceNegotiable"
-    ) {
+    if (type === "checkbox") {
+      if (id === "ownRoom" || id === "sharedRoom") {
+        setFormData({
+          ...formData,
+          type: id === "ownRoom" ? "ownRoom" : "sharedRoom",
+        });
+      } else {
+        setFormData({
+          ...formData,
+          [id]: checked,
+        });
+      }
+    } else if (type === "select-one") {
       setFormData({
         ...formData,
-        [e.target.id]: e.target.checked,
+        [id]: value,
       });
-    }
-
-    if (
-      e.target.type === "number" ||
-      e.target.type === "text" ||
-      e.target.type === "textarea"
-    ) {
+    } else if (type === "number" || type === "text" || type === "textarea") {
       setFormData({
         ...formData,
-        [e.target.id]: e.target.value,
+        [id]: value,
       });
     }
   };
@@ -220,15 +217,21 @@ export default function CreateListing() {
               />
               <span>Parking spot</span>
             </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="furnished"
-                className="w-5"
+            <div className="flex gap-2 items-center">
+              <span>Preferred Gender:</span>
+              <select
+                type="select-one"
+                id="gender"
+                className="p-3 border border-gray-300 rounded-lg"
                 onChange={handleChange}
-                checked={formData.furnished}
-              />
-              <span>Furnished</span>
+                value={formData.gender}
+                required
+              >
+                <option value="">Select Gender</option>
+                <option value="Any Gender">Any Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
             </div>
           </div>
           <div className="flex flex-wrap gap-6">
