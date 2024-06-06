@@ -95,13 +95,13 @@ export default function Home() {
           <div className="">
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-slate-600">
-                Recent price negotiable properties
+                Recent Price Negotiable Properties
               </h2>
               <Link
                 className="text-sm text-blue-800 hover:underline"
                 to={"/search?priceNegotiable=true"}
               >
-                Show more price negotiable properties
+                Show more
               </Link>
             </div>
             <div className="flex flex-wrap gap-4">

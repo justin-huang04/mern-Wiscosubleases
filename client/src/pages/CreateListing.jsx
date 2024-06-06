@@ -173,7 +173,7 @@ export default function CreateListing() {
           />
           <textarea
             type="text"
-            placeholder="Description"
+            placeholder="Description, List contact, other ammenities, leasing dates"
             className="border p-3 rounded-lg"
             id="description"
             required
@@ -230,16 +230,6 @@ export default function CreateListing() {
               />
               <span>Furnished</span>
             </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="priceNegotiable"
-                className="w-5"
-                onChange={handleChange}
-                checked={formData.priceNegotiable}
-              />
-              <span>Price Negotiable</span>
-            </div>
           </div>
           <div className="flex flex-wrap gap-6">
             <div className="flex items-center gap-2">
@@ -286,6 +276,16 @@ export default function CreateListing() {
                 )}
               </div>
             </div>
+            <div className="flex gap-2">
+              <input
+                type="checkbox"
+                id="priceNegotiable"
+                className="w-5"
+                onChange={handleChange}
+                checked={formData.priceNegotiable}
+              />
+              <span>Price Negotiable (List a Discounted Price)</span>
+            </div>
             {formData.priceNegotiable && (
               <div className="flex items-center gap-2">
                 <input
@@ -299,7 +299,10 @@ export default function CreateListing() {
                   value={formData.discountPrice}
                 />
                 <div className="flex flex-col items-center">
-                  <p>Discounted price</p>
+                  <p>
+                    Discounted price (If negotiable but no discount listing,
+                    match discount and regular price)
+                  </p>
 
                   {formData.type === "rent" && (
                     <span className="text-xs">($ / month)</span>

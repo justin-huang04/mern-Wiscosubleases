@@ -19,12 +19,12 @@ export default function CreateListing() {
     name: "",
     description: "",
     address: "",
-    type: "rent",
+    type: "ownRoom",
     bedrooms: 1,
     bathrooms: 1,
     regularPrice: 50,
     discountPrice: 0,
-    offer: false,
+    priceNegotiable: true,
     parking: false,
     furnished: false,
   });
@@ -109,7 +109,7 @@ export default function CreateListing() {
   };
 
   const handleChange = (e) => {
-    if (e.target.id === "sale" || e.target.id === "rent") {
+    if (e.target.id === "sharedRoom" || e.target.id === "ownRoom") {
       setFormData({
         ...formData,
         type: e.target.id,
@@ -119,7 +119,7 @@ export default function CreateListing() {
     if (
       e.target.id === "parking" ||
       e.target.id === "furnished" ||
-      e.target.id === "offer"
+      e.target.id === "priceNegotiable"
     ) {
       setFormData({
         ...formData,
@@ -209,22 +209,22 @@ export default function CreateListing() {
             <div className="flex gap-2">
               <input
                 type="checkbox"
-                id="sale"
+                id="sharedRoom"
                 className="w-5"
                 onChange={handleChange}
-                checked={formData.type === "sale"}
+                checked={formData.type === "sharedRoom"}
               />
-              <span>Sell</span>
+              <span>Shared Room</span>
             </div>
             <div className="flex gap-2">
               <input
                 type="checkbox"
-                id="rent"
+                id="ownRoom"
                 className="w-5"
                 onChange={handleChange}
-                checked={formData.type === "rent"}
+                checked={formData.type === "ownRoom"}
               />
-              <span>Rent</span>
+              <span>Own Room</span>
             </div>
             <div className="flex gap-2">
               <input
@@ -249,12 +249,12 @@ export default function CreateListing() {
             <div className="flex gap-2">
               <input
                 type="checkbox"
-                id="offer"
+                id="priceNegotiable"
                 className="w-5"
                 onChange={handleChange}
-                checked={formData.offer}
+                checked={formData.priceNegotiable}
               />
-              <span>Offer</span>
+              <span>Price Negotiable</span>
             </div>
           </div>
           <div className="flex flex-wrap gap-6">
@@ -297,12 +297,12 @@ export default function CreateListing() {
               />
               <div className="flex flex-col items-center">
                 <p>Regular price</p>
-                {formData.type === "rent" && (
+                {formData.type === "ownRoom" && (
                   <span className="text-xs">($ / month)</span>
                 )}
               </div>
             </div>
-            {formData.offer && (
+            {formData.priceNegotiable && (
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -316,7 +316,7 @@ export default function CreateListing() {
                 />
                 <div className="flex flex-col items-center">
                   <p>Discounted price</p>
-                  {formData.type === "rent" && (
+                  {formData.type === "ownRoom" && (
                     <span className="text-xs">($ / month)</span>
                   )}
                 </div>
