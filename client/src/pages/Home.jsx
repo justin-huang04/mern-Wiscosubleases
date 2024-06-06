@@ -7,43 +7,45 @@ import "swiper/css/bundle";
 import ListingItem from "../components/ListingItem";
 
 export default function Home() {
-  const [offerListings, setOfferListings] = useState([]);
-  const [saleListings, setSaleListings] = useState([]);
-  const [rentListings, setRentListings] = useState([]);
+  const [priceNegotiableListings, setPriceNegotiableListings] = useState([]);
+  const [sharedRoomListings, setSharedRoomListings] = useState([]);
+  const [ownRoomListings, setOwnRoomListings] = useState([]);
   SwiperCore.use([Navigation]);
-  console.log(offerListings);
+  console.log(priceNegotiableListings);
   useEffect(() => {
-    const fetchOfferListings = async () => {
+    const fetchPriceNegotiableListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?offer=true&limit=4");
+        const res = await fetch(
+          "/api/listing/get?priceNegotiable=true&limit=4"
+        );
         const data = await res.json();
-        setOfferListings(data);
-        fetchRentListings();
+        setPriceNegotiableListings(data);
+        fetchOwnRoomListings();
       } catch (error) {
         console.log(error);
       }
     };
-    const fetchRentListings = async () => {
+    const fetchOwnRoomListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?type=rent&limit=4");
+        const res = await fetch("/api/listing/get?type=ownRoom&limit=4");
         const data = await res.json();
-        setRentListings(data);
-        fetchSaleListings();
+        setOwnRoomListings(data);
+        fetchSharedRoomListings();
       } catch (error) {
         console.log(error);
       }
     };
 
-    const fetchSaleListings = async () => {
+    const fetchSharedRoomListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?type=sale&limit=4");
+        const res = await fetch("/api/listing/get?type=sharedRoom&limit=4");
         const data = await res.json();
-        setSaleListings(data);
+        setSharedRoomListings(data);
       } catch (error) {
         log(error);
       }
     };
-    fetchOfferListings();
+    fetchPriceNegotiableListings();
   }, []);
   return (
     <div>
@@ -70,9 +72,9 @@ export default function Home() {
 
       {/* swiper */}
       <Swiper navigation>
-        {offerListings &&
-          offerListings.length > 0 &&
-          offerListings.map((listing) => (
+        {ownRoomListings &&
+          ownRoomListings.length > 0 &&
+          ownRoomListings.map((listing) => (
             <SwiperSlide>
               <div
                 style={{
@@ -86,30 +88,30 @@ export default function Home() {
           ))}
       </Swiper>
 
-      {/* listing results for offer, sale and rent */}
+      {/* listing results for price negotiable properies, shared and own rooms */}
 
       <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
-        {offerListings && offerListings.length > 0 && (
+        {priceNegotiableListings && priceNegotiableListings.length > 0 && (
           <div className="">
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-slate-600">
-                Recent offers
+                Recent price negotiable properties
               </h2>
               <Link
                 className="text-sm text-blue-800 hover:underline"
-                to={"/search?offer=true"}
+                to={"/search?priceNegotiable=true"}
               >
-                Show more offers
+                Show more price negotiable properties
               </Link>
             </div>
             <div className="flex flex-wrap gap-4">
-              {offerListings.map((listing) => (
+              {priceNegotiableListings.map((listing) => (
                 <ListingItem listing={listing} key={listing._id} />
               ))}
             </div>
           </div>
         )}
-        {rentListings && rentListings.length > 0 && (
+        {ownRoomListings && ownRoomListings.length > 0 && (
           <div className="">
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-slate-600">
@@ -117,19 +119,19 @@ export default function Home() {
               </h2>
               <Link
                 className="text-sm text-blue-800 hover:underline"
-                to={"/search?type=rent"}
+                to={"/search?type=ownRoom"}
               >
                 Show more
               </Link>
             </div>
             <div className="flex flex-wrap gap-4">
-              {rentListings.map((listing) => (
+              {ownRoomListings.map((listing) => (
                 <ListingItem listing={listing} key={listing._id} />
               ))}
             </div>
           </div>
         )}
-        {saleListings && saleListings.length > 0 && (
+        {sharedRoomListings && sharedRoomListings.length > 0 && (
           <div className="">
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-slate-600">
@@ -137,13 +139,13 @@ export default function Home() {
               </h2>
               <Link
                 className="text-sm text-blue-800 hover:underline"
-                to={"/search?type=sale"}
+                to={"/search?type=sharedRoom"}
               >
                 Show more
               </Link>
             </div>
             <div className="flex flex-wrap gap-4">
-              {saleListings.map((listing) => (
+              {sharedRoomListings.map((listing) => (
                 <ListingItem listing={listing} key={listing._id} />
               ))}
             </div>

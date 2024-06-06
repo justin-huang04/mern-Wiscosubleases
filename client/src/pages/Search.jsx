@@ -69,8 +69,8 @@ export default function Search() {
   const handleChange = (e) => {
     if (
       e.target.id === "all" ||
-      e.target.id === "rent" ||
-      e.target.id === "sale"
+      e.target.id === "ownRoom" ||
+      e.target.id === "sharedRoom"
     ) {
       setSidebardata({ ...sidebardata, type: e.target.id });
     }
@@ -154,27 +154,27 @@ export default function Search() {
                 onChange={handleChange}
                 checked={sidebardata.type === "all"}
               />
-              <span>Rent & Sale</span>
+              <span>Own and Shared Room</span>
             </div>
             <div className="flex gap-2">
               <input
                 type="checkbox"
-                id="rent"
+                id="ownRoom"
                 className="w-5"
                 onChange={handleChange}
-                checked={sidebardata.type === "rent"}
+                checked={sidebardata.type === "ownRoom"}
               />
-              <span>Rent</span>
+              <span>Own Room</span>
             </div>
             <div className="flex gap-2">
               <input
                 type="checkbox"
-                id="sale"
+                id="sharedRoom"
                 className="w-5"
                 onChange={handleChange}
-                checked={sidebardata.type === "sale"}
+                checked={sidebardata.type === "sharedRoom"}
               />
-              <span>Sale</span>
+              <span>Shared Room</span>
             </div>
             <div className="flex gap-2">
               <input

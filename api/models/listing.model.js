@@ -26,7 +26,7 @@ const listingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    bedrooms: {
+    roommates: {
       type: Number,
       required: true,
     },
@@ -42,7 +42,7 @@ const listingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    offer: {
+    priceNegotiable: {
       type: Boolean,
       required: true,
     },
