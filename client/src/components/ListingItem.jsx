@@ -28,7 +28,7 @@ export default function ListingItem({ listing }) {
           </p>
           <p className="text-sm text-gray-600 line-clamp-2">
             {" "}
-            Available Sublease Dates: {listing.leaseDates}
+            Available: {listing.leaseDates}
           </p>
           <p className="text-slate-500 mt-2 font-semibold ">
             $
@@ -41,6 +41,9 @@ export default function ListingItem({ listing }) {
               {listing.gender === "Any Gender"
                 ? "Any gender preferred"
                 : `${listing.gender} preferred`}
+            </div>
+            <div className="font-bold text-xs">
+              {listing.type === "ownRoom" ? "Private Room" : "Shared Room"}
             </div>
           </div>
         </div>
