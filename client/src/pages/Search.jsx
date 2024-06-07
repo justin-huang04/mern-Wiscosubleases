@@ -150,7 +150,7 @@ export default function Search() {
                 onChange={handleChange}
                 checked={sidebardata.type === "all"}
               />
-              <span>Own and Shared Room</span>
+              <span>Private and Shared Room</span>
             </div>
             <div className="flex gap-2">
               <input
@@ -160,7 +160,7 @@ export default function Search() {
                 onChange={handleChange}
                 checked={sidebardata.type === "ownRoom"}
               />
-              <span>Own Room</span>
+              <span>Private Room</span>
             </div>
             <div className="flex gap-2">
               <input

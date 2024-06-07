@@ -26,23 +26,21 @@ export default function ListingItem({ listing }) {
           <p className="text-sm text-gray-600 line-clamp-2">
             {listing.description}
           </p>
+          <p className="text-sm text-gray-600 line-clamp-2">
+            {" "}
+            Available Sublease Dates: {listing.leaseDates}
+          </p>
           <p className="text-slate-500 mt-2 font-semibold ">
             $
             {listing.priceNegotiable
-              ? listing.discountPrice.toLocaleString("en-US")
-              : listing.regularPrice.toLocaleString("en-US")}
-            {listing.type === "rent" && " / month"}
+              ? `${listing.discountPrice.toLocaleString("en-US")} per month`
+              : `${listing.regularPrice.toLocaleString("en-US")} per month`}
           </p>
           <div className="text-slate-700 flex gap-4">
             <div className="font-bold text-xs">
-              {listing.roommates > 1
-                ? `${listing.roommates} roommates `
-                : `${listing.roommates} roommate `}
-            </div>
-            <div className="font-bold text-xs">
-              {listing.bathrooms > 1
-                ? `${listing.bathrooms} baths `
-                : `${listing.bathrooms} bath `}
+              {listing.gender === "Any Gender"
+                ? "Any gender preferred"
+                : `${listing.gender} preferred`}
             </div>
           </div>
         </div>

@@ -14,6 +14,12 @@ const listingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    leaseDates: {
+      type: String,
+      required: true,
+      match:
+        /^([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01])\/\d{4}\s?-\s?([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01])\/\d{4}$/,
+    },
     regularPrice: {
       type: Number,
       required: true,

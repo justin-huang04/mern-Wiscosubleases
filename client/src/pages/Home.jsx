@@ -115,7 +115,7 @@ export default function Home() {
           <div className="">
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-slate-600">
-                Recent Places for Your Own Room
+                Recent Places for a Private Room
               </h2>
               <Link
                 className="text-sm text-blue-800 hover:underline"
