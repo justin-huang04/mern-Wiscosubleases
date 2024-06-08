@@ -45,6 +45,9 @@ export default function ListingItem({ listing }) {
             <div className="font-bold text-xs">
               {listing.type === "ownRoom" ? "Private Room" : "Shared Room"}
             </div>
+            <div className="font-bold text-xs">
+              {listing.priceNegotiable === true ? "Price Negotiable" : ""}
+            </div>
           </div>
         </div>
       </Link>
