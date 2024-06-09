@@ -64,7 +64,7 @@ export const getListing = async (req, res, next) => {
 
 export const getListings = async (req, res, next) => {
   try {
-    const limit = parseInt(req.query.limit) || 20;
+    const limit = parseInt(req.query.limit) || 10; // Has to be 1 bigger than showMore in Search.jsx
     const startIndex = parseInt(req.query.startIndex) || 0;
     let priceNegotiable = req.query.priceNegotiable;
 
