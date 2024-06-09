@@ -64,7 +64,7 @@ export const getListing = async (req, res, next) => {
 
 export const getListings = async (req, res, next) => {
   try {
-    const limit = parseInt(req.query.limit) || 9;
+    const limit = parseInt(req.query.limit) || 20;
     const startIndex = parseInt(req.query.startIndex) || 0;
     let priceNegotiable = req.query.priceNegotiable;
 
@@ -96,12 +96,26 @@ export const getListings = async (req, res, next) => {
 
     const order = req.query.order || "desc";
 
+    const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice) : 1000;
+
+    let priceCondition = { regularPrice: { $lte: maxPrice } };
+
+    if (req.query.discountPrice) {
+      priceCondition = {
+        $or: [
+          { regularPrice: { $lte: maxPrice } },
+          { discountPrice: { $lte: maxPrice } },
+        ],
+      };
+    }
+
     const listings = await Listing.find({
       name: { $regex: searchTerm, $options: "i" },
       priceNegotiable,
       gender,
       parking,
       type,
+      ...priceCondition,
     })
       .sort({ [sort]: order })
       .limit(limit)

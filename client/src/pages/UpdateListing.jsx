@@ -27,6 +27,7 @@ export default function CreateListing() {
     priceNegotiable: true,
     parking: false,
     gender: "Any gender",
+    leaseDates: "",
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -201,6 +202,17 @@ export default function CreateListing() {
             required
             onChange={handleChange}
             value={formData.address}
+          />
+          <input
+            type="text"
+            placeholder="Available Sublease Dates (MM/DD/YYYY - MM/DD/YYYY)"
+            className="border p-3 rounded-lg"
+            id="leaseDates"
+            required
+            pattern="^([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01])\/\d{4}\s?-\s?([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01])\/\d{4}$"
+            onChange={handleChange}
+            value={formData.leaseDates}
+            title="Please enter valid date in the format: MM/DD/YYYY - MM/DD/YYYY"
           />
           <div className="flex gap-6 flex-wrap">
             <div className="flex gap-2">

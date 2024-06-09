@@ -9,9 +9,10 @@ export default function Search() {
     type: "all",
     parking: false,
     gender: "Any Gender",
-    offer: false,
+    priceNegotiable: false,
     sort: "created_at",
     order: "desc",
+    maxPrice: 1000,
   });
 
   const [loading, setLoading] = useState(false);
@@ -23,28 +24,31 @@ export default function Search() {
     const searchTermFromUrl = urlParams.get("searchTerm");
     const typeFromUrl = urlParams.get("type");
     const parkingFromUrl = urlParams.get("parking");
-    const furnishedFromUrl = urlParams.get("gender");
-    const offerFromUrl = urlParams.get("priceNegotiable");
+    const genderFromUrl = urlParams.get("gender");
+    const priceNegotiableFromUrl = urlParams.get("priceNegotiable");
     const sortFromUrl = urlParams.get("sort");
     const orderFromUrl = urlParams.get("order");
+    const maxPriceFromUrl = urlParams.get("maxPrice");
 
     if (
-      searchTermFromUrl ||
-      typeFromUrl ||
-      parkingFromUrl ||
-      furnishedFromUrl ||
-      offerFromUrl ||
-      sortFromUrl ||
-      orderFromUrl
+      searchTermFromUrl !== null ||
+      typeFromUrl !== null ||
+      parkingFromUrl !== null ||
+      genderFromUrl !== null ||
+      priceNegotiableFromUrl !== null ||
+      sortFromUrl !== null ||
+      orderFromUrl !== null ||
+      maxPriceFromUrl !== null
     ) {
       setSidebardata({
         searchTerm: searchTermFromUrl || "",
         type: typeFromUrl || "all",
         parking: parkingFromUrl === "true" ? true : false,
-        furnished: furnishedFromUrl === "true" ? true : false,
-        offer: offerFromUrl === "true" ? true : false,
+        gender: genderFromUrl || "Any Gender",
+        priceNegotiable: priceNegotiableFromUrl === "true" ? true : false,
         sort: sortFromUrl || "created_at",
         order: orderFromUrl || "desc",
+        maxPrice: maxPriceFromUrl ? parseInt(maxPriceFromUrl) : 1000,
       });
     }
 
@@ -54,7 +58,7 @@ export default function Search() {
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
-      if (data.length > 8) {
+      if (data.length > 9) {
         setShowMore(true);
       } else {
         setShowMore(false);
@@ -67,31 +71,25 @@ export default function Search() {
   }, [location.search]);
 
   const handleChange = (e) => {
-    if (
-      e.target.id === "all" ||
-      e.target.id === "ownRoom" ||
-      e.target.id === "sharedRoom"
-    ) {
-      setSidebardata({ ...sidebardata, type: e.target.id });
-    }
+    const { id, value, type, checked } = e.target;
 
-    if (e.target.id === "searchTerm") {
-      setSidebardata({ ...sidebardata, searchTerm: e.target.value });
-    }
-
-    if (e.target.id === "parking" || e.target.id === "priceNegotiable") {
+    if (id === "all" || id === "ownRoom" || id === "sharedRoom") {
+      setSidebardata({ ...sidebardata, type: id });
+    } else if (id === "searchTerm") {
+      setSidebardata({ ...sidebardata, searchTerm: value });
+    } else if (id === "parking" || id === "priceNegotiable") {
       setSidebardata({
         ...sidebardata,
-        [e.target.id]:
-          e.target.checked || e.target.checked === "true" ? true : false,
+        [id]: type === "checkbox" ? checked : value,
       });
-    }
-
-    if (e.target.id === "sort_order") {
-      const sort = e.target.value.split("_")[0] || "created_at";
-
-      const order = e.target.value.split("_")[1] || "desc";
-
+    } else if (id === "maxPrice") {
+      setSidebardata({
+        ...sidebardata,
+        maxPrice: value ? parseInt(value) : "",
+      });
+    } else if (id === "sort_order") {
+      const sort = value.split("_")[0] || "created_at";
+      const order = value.split("_")[1] || "desc";
       setSidebardata({ ...sidebardata, sort, order });
     }
   };
@@ -102,10 +100,11 @@ export default function Search() {
     urlParams.set("searchTerm", sidebardata.searchTerm);
     urlParams.set("type", sidebardata.type);
     urlParams.set("parking", sidebardata.parking);
-    urlParams.set("furnished", sidebardata.furnished);
-    urlParams.set("offer", sidebardata.offer);
+    urlParams.set("gender", sidebardata.gender);
+    urlParams.set("priceNegotiable", sidebardata.priceNegotiable);
     urlParams.set("sort", sidebardata.sort);
     urlParams.set("order", sidebardata.order);
+    urlParams.set("maxPrice", sidebardata.maxPrice);
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
@@ -115,6 +114,7 @@ export default function Search() {
     const startIndex = numberOfListings;
     const urlParams = new URLSearchParams(location.search);
     urlParams.set("startIndex", startIndex);
+
     const searchQuery = urlParams.toString();
     const res = await fetch(`/api/listing/get?${searchQuery}`);
     const data = await res.json();
@@ -123,9 +123,10 @@ export default function Search() {
     }
     setListings([...listings, ...data]);
   };
+
   return (
     <div className="flex flex-col md:flex-row">
-      <div className="p-7  border-b-2 md:border-r-2 md:min-h-screen">
+      <div className="p-7 border-b-2 md:border-r-2 md:min-h-screen">
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
           <div className="flex items-center gap-2">
             <label className="whitespace-nowrap font-semibold">
@@ -172,15 +173,30 @@ export default function Search() {
               />
               <span>Shared Room</span>
             </div>
+          </div>
+
+          <div className="flex gap-2 flex-wrap items-center">
+            <label className="font-semibold">Max budget ($ / month):</label>
+            <div className="flex gap-2 items-center">
+              <input
+                type="number"
+                id="maxPrice"
+                min="0"
+                max="1000000000"
+                className="border p-2 rounded-lg"
+                onChange={handleChange}
+                value={sidebardata.maxPrice}
+              />
+            </div>
             <div className="flex gap-2">
               <input
                 type="checkbox"
-                id="offer"
+                id="priceNegotiable"
                 className="w-5"
                 onChange={handleChange}
-                checked={sidebardata.offer}
+                checked={sidebardata.priceNegotiable}
               />
-              <span>Offer</span>
+              <span>Price Negotiable</span>
             </div>
           </div>
           <div className="flex gap-2 flex-wrap items-center">
@@ -215,7 +231,7 @@ export default function Search() {
               className="border rounded-lg p-3"
             >
               <option value="regularPrice_desc">Price high to low</option>
-              <option value="regularPrice_asc">Price low to hight</option>
+              <option value="regularPrice_asc">Price low to high</option>
               <option value="createdAt_desc">Latest</option>
               <option value="createdAt_asc">Oldest</option>
             </select>

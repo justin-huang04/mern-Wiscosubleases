@@ -26,6 +26,7 @@ export default function CreateListing() {
     priceNegotiable: false,
     parking: false,
     gender: "Any Gender",
+    leaseDates: "",
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
