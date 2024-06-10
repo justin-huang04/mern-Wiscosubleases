@@ -1,7 +1,8 @@
-import { FaSearch } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { FaSearch } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
@@ -22,38 +23,39 @@ export default function Header() {
       setSearchTerm(searchTermFromUrl);
     }
   }, [location.search]);
+
   return (
-    <header className="bg-slate-200 shadow-md">
+    <header className="bg-red-800 shadow-md">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
         <Link to="/">
-          <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
-            <span className="text-slate-500">Sahand</span>
-            <span className="text-slate-700">Estate</span>
+          <h1 className="font-bold text-lg sm:text-xl flex flex-wrap">
+            <span className="text-white">Wisco</span>
+            <span className="text-red-200">Subleases</span>
           </h1>
         </Link>
         <form
           onSubmit={handleSubmit}
-          className="bg-slate-100 p-3 rounded-lg flex items-center"
+          className="bg-red-700 p-3 rounded-lg flex items-center"
         >
           <input
             type="text"
             placeholder="Search..."
-            className="bg-transparent focus:outline-none w-24 sm:w-64"
+            className="bg-red-700 focus:outline-none w-24 sm:w-64 text-white"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button>
-            <FaSearch className="text-slate-600" />
+            <FaSearch className="text-white" />
           </button>
         </form>
         <ul className="flex gap-4">
           <Link to="/">
-            <li className="hidden sm:inline text-slate-700 hover:underline">
+            <li className="hidden sm:inline text-white hover:underline">
               Home
             </li>
           </Link>
           <Link to="/about">
-            <li className="hidden sm:inline text-slate-700 hover:underline">
+            <li className="hidden sm:inline text-white hover:underline">
               About
             </li>
           </Link>
@@ -65,7 +67,7 @@ export default function Header() {
                 alt="profile"
               />
             ) : (
-              <li className=" text-slate-700 hover:underline"> Sign in</li>
+              <li className="text-white hover:underline">Sign in</li>
             )}
           </Link>
         </ul>
