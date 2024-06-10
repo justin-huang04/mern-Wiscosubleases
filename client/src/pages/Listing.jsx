@@ -7,13 +7,15 @@ import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
 import {
   FaBath,
-  FaBed,
-  FaChair,
+  FaDoorClosed,
+  FaFemale,
+  FaMale,
   FaMapMarkedAlt,
   FaMapMarkerAlt,
   FaParking,
   FaShare,
 } from "react-icons/fa";
+import { BiMaleFemale } from "react-icons/bi";
 import Contact from "../components/Contact";
 
 // https://sabe.io/blog/javascript-format-numbers-commas#:~:text=The%20best%20way%20to%20format,format%20the%20number%20with%20commas.
@@ -121,15 +123,20 @@ export default function Listing() {
               {listing.description}
             </p>
             <ul className="text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm:gap-6">
-              <li className="flex items-center gap-1 whitespace-nowrap ">
-                <FaChair className="text-lg" />
-                {listing.gender === "Male" && "Male "}
-                {listing.gender === "Female" && "Female "}
-                {listing.gender !== "Any Gender" && "preferred"}
-                {listing.gender === "Any Gender" && "Any gender"}
+              <li className="flex items-center gap-1 whitespace-nowrap">
+                {listing.gender === "Female" && (
+                  <FaFemale className="text-lg" />
+                )}
+                {listing.gender === "Male" && <FaMale className="text-lg" />}
+                {listing.gender === "Any Gender" && (
+                  <BiMaleFemale className="text-lg" />
+                )}
+                {listing.gender === "Male" && "Male preferred"}
+                {listing.gender === "Female" && "Female preferred"}
+                {listing.gender === "Any Gender" && "Any gender preferred"}
               </li>
               <li className="flex items-center gap-1 whitespace-nowrap ">
-                <FaBed className="text-lg" />
+                <FaDoorClosed className="text-lg" />
                 {listing.bedrooms > 1
                   ? `${listing.roommates} roommates `
                   : `${listing.roommates} roommate `}

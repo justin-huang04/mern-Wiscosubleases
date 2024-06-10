@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { MdLocationOn } from "react-icons/md";
+import { FaFemale, FaMale } from "react-icons/fa";
+import { BiMaleFemale } from "react-icons/bi";
 
 export default function ListingItem({ listing }) {
   return (
@@ -37,7 +39,12 @@ export default function ListingItem({ listing }) {
               : `${listing.regularPrice.toLocaleString("en-US")} per month`}
           </p>
           <div className="text-slate-700 flex gap-4">
-            <div className="font-bold text-xs">
+            <div className="font-bold text-xs flex items-center gap-1">
+              {listing.gender === "Female" && <FaFemale className="text-lg" />}
+              {listing.gender === "Male" && <FaMale className="text-lg" />}
+              {listing.gender === "Any Gender" && (
+                <BiMaleFemale className="text-lg" />
+              )}
               {listing.gender === "Any Gender"
                 ? "Any gender preferred"
                 : `${listing.gender} preferred`}
