@@ -87,6 +87,8 @@ export default function Search() {
         ...sidebardata,
         maxPrice: value ? parseInt(value) : "",
       });
+    } else if (id === "gender") {
+      setSidebardata({ ...sidebardata, gender: value });
     } else if (id === "sort_order") {
       const sort = value.split("_")[0] || "created_at";
       const order = value.split("_")[1] || "desc";
@@ -211,16 +213,19 @@ export default function Search() {
               />
               <span>Parking</span>
             </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="furnished"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebardata.furnished}
-              />
-              <span>Furnished</span>
-            </div>
+          </div>
+          <div className="flex gap-2 flex-wrap items-center">
+            <label className="font-semibold">Preferred Gender:</label>
+            <select
+              id="gender"
+              className="border rounded-lg p-3"
+              onChange={handleChange}
+              value={sidebardata.gender}
+            >
+              <option value="Any Gender">Any Gender</option>
+              <option value="Male">All Male</option>
+              <option value="Female">All Female</option>
+            </select>
           </div>
           <div className="flex items-center gap-2">
             <label className="font-semibold">Sort:</label>
