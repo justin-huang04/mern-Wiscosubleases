@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { FaHome } from "react-icons/fa";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
@@ -49,15 +50,12 @@ export default function Header() {
           </button>
         </form>
         <ul className="flex gap-4">
-          <Link to="/">
-            <li className="hidden sm:inline text-white hover:underline">
-              Home
-            </li>
+          <Link to="/" className="flex items-center text-white hover:underline">
+            <FaHome className="text-lg" />
+            <li className="hidden sm:inline">Home</li>
           </Link>
-          <Link to="/about">
-            <li className="hidden sm:inline text-white hover:underline">
-              About
-            </li>
+          <Link to="/about" className="text-white hover:underline">
+            <li className="hidden sm:inline">About</li>
           </Link>
           <Link to="/profile">
             {currentUser ? (

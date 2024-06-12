@@ -47,49 +47,42 @@ export default function Home() {
     };
     fetchPriceNegotiableListings();
   }, []);
+
   return (
     <div>
       {/* top */}
-      <div className="flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto">
-        <h1 className="text-slate-700 font-bold text-3xl lg:text-6xl">
-          Find Your Perfect Fit:{" "}
-          <span className="text-slate-500">Subleases</span>
-          <br />
-          Made Simple
-        </h1>
-        <div className="text-gray-400 text-xs sm:text-sm">
-          UWSubleaseHub is the best way to find subleases on campus
-          <br />
-          Explore a diverse selection of student sublease listings
-        </div>
-        <Link
-          to={"/search"}
-          className="text-xs sm:text-sm text-blue-800 font-bold hover:underline"
+      <div className="relative w-full h-[60vh] overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          className="absolute top-0 left-0 w-full h-full object-cover"
         >
-          Let's get started...
-        </Link>
+          <source src="/IMG_0.MOV" type="video/mp4" />
+          Your browser does not support
+          <source src="IMG_0.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute top-0 left-0 w-full h-2/3 flex flex-col justify-center items-center text-center z-10 p-8">
+          <h1 className="text-white font-bold text-3xl lg:text-6xl">
+            <span className="text-white">Subleases.</span> Made. Simple
+          </h1>
+          <div className="text-gray-200 text-base sm:text-lg mt-4">
+            WiscoSubleases is the best place to find and post subleases
+            <br />
+            Need a room? Explore wide variety of student campus subleases below.
+          </div>
+          <Link
+            to={"/search"}
+            className="text-xs sm:text-sm text-white font-bold bg-red-800 py-2 px-4 mt-6 rounded-lg hover:bg-red-700"
+          >
+            Explore Subleases...
+          </Link>
+        </div>
+        <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
       </div>
 
-      {/* swiper */}
-      <Swiper navigation>
-        {ownRoomListings &&
-          ownRoomListings.length > 0 &&
-          ownRoomListings.map((listing) => (
-            <SwiperSlide>
-              <div
-                style={{
-                  background: `url(${listing.imageUrls[0]}) center no-repeat`,
-                  backgroundSize: "cover",
-                }}
-                className="h-[500px]"
-                key={listing._id}
-              ></div>
-            </SwiperSlide>
-          ))}
-      </Swiper>
-
-      {/* listing results for price negotiable properies, shared and own rooms */}
-
+      {/* listing results for price negotiable properties, shared and own rooms */}
       <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
         {priceNegotiableListings && priceNegotiableListings.length > 0 && (
           <div className="">
