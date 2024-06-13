@@ -10,7 +10,7 @@ export default function Search() {
     parking: false,
     gender: "Any Gender",
     priceNegotiable: false,
-    sort: "created_at",
+    sort: "createdAt",
     order: "desc",
     maxPrice: 1000,
   });
@@ -46,7 +46,7 @@ export default function Search() {
         parking: parkingFromUrl === "true" ? true : false,
         gender: genderFromUrl || "Any Gender",
         priceNegotiable: priceNegotiableFromUrl === "true" ? true : false,
-        sort: sortFromUrl || "created_at",
+        sort: sortFromUrl || "createdAt",
         order: orderFromUrl || "desc",
         maxPrice: maxPriceFromUrl ? parseInt(maxPriceFromUrl) : 1000,
       });
@@ -90,7 +90,7 @@ export default function Search() {
     } else if (id === "gender") {
       setSidebardata({ ...sidebardata, gender: value });
     } else if (id === "sort_order") {
-      const sort = value.split("_")[0] || "created_at";
+      const sort = value.split("_")[0] || "createdAt";
       const order = value.split("_")[1] || "desc";
       setSidebardata({ ...sidebardata, sort, order });
     }
@@ -231,7 +231,7 @@ export default function Search() {
             <label className="font-semibold">Sort:</label>
             <select
               onChange={handleChange}
-              defaultValue={"created_at_desc"}
+              defaultValue={"createdAt_desc"}
               id="sort_order"
               className="border rounded-lg p-3"
             >
