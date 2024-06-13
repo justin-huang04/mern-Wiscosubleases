@@ -58,19 +58,20 @@ export default function Home() {
           muted
           className="absolute top-0 left-0 w-full h-full object-cover"
         >
-          <source src="/IMG_0.MOV" type="video/mp4" />
-          Your browser does not support
-          <source src="IMG_0.mp4" type="video/mp4" />
+          <source src="/stockvid.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+          <source src="stockvid.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
+        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-20 z-0"></div>
         <div className="absolute top-0 left-0 w-full h-2/3 flex flex-col justify-center items-center text-center z-10 p-8">
           <h1 className="text-white font-bold text-3xl lg:text-6xl">
-            <span className="text-white">Subleases.</span> Made. Simple
+            <span className="text-white">SUBLEASES.</span> MADE. SIMPLE
           </h1>
           <div className="text-gray-200 text-base sm:text-lg mt-4">
-            WiscoSubleases is the best place to find and post subleases
+            Need to get rid of a room? Sign in and post a listing.
             <br />
-            Need a room? Explore wide variety of student campus subleases below.
+            Need a room? Explore student listings below.
           </div>
           <Link
             to={"/search"}
@@ -79,7 +80,6 @@ export default function Home() {
             Explore Subleases...
           </Link>
         </div>
-        <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
       </div>
 
       {/* listing results for price negotiable properties, shared and own rooms */}
@@ -87,8 +87,11 @@ export default function Home() {
         {priceNegotiableListings && priceNegotiableListings.length > 0 && (
           <div className="">
             <div className="my-3">
-              <h2 className="text-2xl font-semibold text-slate-600">
-                Recent Price Negotiable Properties
+              <h2
+                className="text-2xl font-semibold text-slate-700"
+                style={{ fontFamily: "Helvetica" }}
+              >
+                FEATURED SUBLEASES
               </h2>
               <Link
                 className="text-sm text-blue-800 hover:underline"
@@ -107,8 +110,11 @@ export default function Home() {
         {ownRoomListings && ownRoomListings.length > 0 && (
           <div className="">
             <div className="my-3">
-              <h2 className="text-2xl font-semibold text-slate-600">
-                Recent Places for a Private Room
+              <h2
+                className="text-2xl font-semibold text-slate-700"
+                style={{ fontFamily: "Helvetica" }}
+              >
+                RECENT PRIVATE ROOM SUBLEASES
               </h2>
               <Link
                 className="text-sm text-blue-800 hover:underline"
@@ -127,8 +133,11 @@ export default function Home() {
         {sharedRoomListings && sharedRoomListings.length > 0 && (
           <div className="">
             <div className="my-3">
-              <h2 className="text-2xl font-semibold text-slate-600">
-                Recent places for Shared Room
+              <h2
+                className="text-2xl font-semibold text-slate-700"
+                style={{ fontFamily: "Helvetica" }}
+              >
+                RECENT SHARED ROOM SUBLEASES
               </h2>
               <Link
                 className="text-sm text-blue-800 hover:underline"
