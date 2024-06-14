@@ -110,11 +110,11 @@ export default function Listing() {
               </p>
               {listing.priceNegotiable && (
                 <p className="bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
-                  {+listing.regularPrice - +listing.discountPrice === 0
-                    ? "Price Negotiable"
-                    : `Price Negotiable - $${
+                  {+listing.regularPrice - +listing.discountPrice > 0
+                    ? `Price Negotiable - $${
                         +listing.regularPrice - +listing.discountPrice
-                      }/month OFF`}
+                      }/month OFF`
+                    : "Price Negotiable"}
                 </p>
               )}
             </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   getDownloadURL,
   getStorage,
@@ -32,7 +32,41 @@ export default function CreateListing() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  console.log(formData);
+  const [addressValid, setAddressValid] = useState(true); // State to track address validity
+  const addressInputRef = useRef(null);
+
+  useEffect(() => {
+    if (window.google) {
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        addressInputRef.current,
+        {
+          fields: ["place_id", "formatted_address"], // Include the place_id and formatted_address fields
+          types: ["geocode", "establishment"], // Include establishments and addresses
+          componentRestrictions: { country: "us" }, // Restrict results to a specific country
+        }
+      );
+
+      autocomplete.setOptions({ placeIdOnly: true }); // Only return results with place IDs
+
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (place && place.formatted_address) {
+          setFormData((prevData) => ({
+            ...prevData,
+            address: place.formatted_address,
+          }));
+          setAddressValid(true);
+        }
+      });
+    }
+  }, []);
+
+  const validateAddress = () => {
+    const isValid = formData.address.trim() !== "";
+    setAddressValid(isValid);
+    return isValid;
+  };
+
   const handleImageSubmit = (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
@@ -119,6 +153,11 @@ export default function CreateListing() {
         [id]: value,
       });
     }
+
+    // Reset address validation on address change
+    if (id === "address") {
+      setAddressValid(true); // Assuming it's valid initially, validation will update it
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -126,8 +165,15 @@ export default function CreateListing() {
     try {
       if (formData.imageUrls.length < 1)
         return setError("You must upload at least one image");
+
       if (+formData.regularPrice < +formData.discountPrice)
         return setError("Discount price must be lower than regular price");
+
+      // Validate address before submitting
+      if (!validateAddress()) {
+        return setError("Please enter a valid address");
+      }
+
       setLoading(true);
       setError(false);
       const res = await fetch("/api/listing/create", {
@@ -151,6 +197,7 @@ export default function CreateListing() {
       setLoading(false);
     }
   };
+
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
@@ -181,22 +228,28 @@ export default function CreateListing() {
           <input
             type="text"
             placeholder="Address"
-            className="border p-3 rounded-lg"
+            className={`border p-3 rounded-lg ${
+              !addressValid ? "border-red-500" : ""
+            }`}
             id="address"
             required
             onChange={handleChange}
             value={formData.address}
+            ref={addressInputRef}
           />
+          {!addressValid && (
+            <p className="text-red-500 text-sm">Please enter a valid address</p>
+          )}
           <input
             type="text"
             placeholder="Available Sublease Dates (MM/DD/YYYY - MM/DD/YYYY)"
             className="border p-3 rounded-lg"
             id="leaseDates"
             required
-            pattern="^([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01])\/\d{4}\s?-\s?([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01])\/\d{4}$"
+            pattern="^([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01])\/\d{4}\s-\s([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01])\/\d{4}$"
+            title="Please enter valid date in the format: MM/DD/YYYY - MM/DD/YYYY"
             onChange={handleChange}
             value={formData.leaseDates}
-            title="Please enter valid date in the format: MM/DD/YYYY - MM/DD/YYYY"
           />
 
           <div className="flex gap-6 flex-wrap">
