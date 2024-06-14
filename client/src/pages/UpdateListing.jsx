@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   getDownloadURL,
   getStorage,
@@ -9,7 +9,7 @@ import { app } from "../firebase";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function CreateListing() {
+export default function UpdateListing() {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const params = useParams();
@@ -33,6 +33,9 @@ export default function CreateListing() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [addressValid, setAddressValid] = useState(true);
+  const addressInputRef = useRef(null);
+  const autocompleteRef = useRef(null);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -47,7 +50,61 @@ export default function CreateListing() {
     };
 
     fetchListing();
+  }, [params.listingId]);
+
+  useEffect(() => {
+    if (window.google) {
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        addressInputRef.current,
+        {
+          fields: ["place_id", "formatted_address"],
+          types: ["geocode", "establishment"],
+          componentRestrictions: { country: "us" },
+        }
+      );
+
+      autocompleteRef.current = autocomplete;
+
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (place && place.formatted_address) {
+          setFormData((prevData) => ({
+            ...prevData,
+            address: place.formatted_address,
+          }));
+          setAddressValid(true);
+        }
+      });
+    }
   }, []);
+
+  const validateAddress = async (address) => {
+    if (address.trim() === "") {
+      setAddressValid(false);
+      return false;
+    }
+
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          address
+        )}&key=YOUR_API_KEY`
+      );
+      const data = await response.json();
+
+      if (data.status === "OK" && data.results.length > 0) {
+        setAddressValid(true);
+        return true;
+      } else {
+        setAddressValid(false);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error validating address:", error);
+      setAddressValid(false);
+      return false;
+    }
+  };
 
   const handleImageSubmit = (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
@@ -109,7 +166,7 @@ export default function CreateListing() {
     });
   };
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { id, value, type, checked } = e.target;
 
     if (type === "checkbox") {
@@ -134,6 +191,15 @@ export default function CreateListing() {
         ...formData,
         [id]: value,
       });
+    }
+
+    if (id === "address") {
+      setFormData({
+        ...formData,
+        address: value,
+      });
+      const isValid = await validateAddress(value);
+      setAddressValid(isValid);
     }
   };
 
@@ -197,12 +263,18 @@ export default function CreateListing() {
           <input
             type="text"
             placeholder="Address"
-            className="border p-3 rounded-lg"
+            className={`border p-3 rounded-lg ${
+              !addressValid ? "border-red-500" : ""
+            }`}
             id="address"
             required
             onChange={handleChange}
             value={formData.address}
+            ref={addressInputRef}
           />
+          {!addressValid && (
+            <p className="text-red-500 text-sm">Please enter a valid address</p>
+          )}
           <input
             type="text"
             placeholder="Available Sublease Dates (MM/DD/YYYY - MM/DD/YYYY)"

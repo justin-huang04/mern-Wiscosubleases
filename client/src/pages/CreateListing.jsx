@@ -32,21 +32,22 @@ export default function CreateListing() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [addressValid, setAddressValid] = useState(true); // State to track address validity
+  const [addressValid, setAddressValid] = useState(true);
   const addressInputRef = useRef(null);
+  const autocompleteRef = useRef(null);
 
   useEffect(() => {
     if (window.google) {
       const autocomplete = new window.google.maps.places.Autocomplete(
         addressInputRef.current,
         {
-          fields: ["place_id", "formatted_address"], // Include the place_id and formatted_address fields
-          types: ["geocode", "establishment"], // Include establishments and addresses
-          componentRestrictions: { country: "us" }, // Restrict results to a specific country
+          fields: ["place_id", "formatted_address"],
+          types: ["geocode", "establishment"],
+          componentRestrictions: { country: "us" },
         }
       );
 
-      autocomplete.setOptions({ placeIdOnly: true }); // Only return results with place IDs
+      autocompleteRef.current = autocomplete;
 
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
@@ -61,10 +62,32 @@ export default function CreateListing() {
     }
   }, []);
 
-  const validateAddress = () => {
-    const isValid = formData.address.trim() !== "";
-    setAddressValid(isValid);
-    return isValid;
+  const validateAddress = async (address) => {
+    if (address.trim() === "") {
+      setAddressValid(false);
+      return false;
+    }
+
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          address
+        )}&key=AIzaSyCEbvfaPXGTFbxQHr4CbxkqnUYIqm3F5uo`
+      );
+      const data = await response.json();
+
+      if (data.status === "OK" && data.results.length > 0) {
+        setAddressValid(true);
+        return true;
+      } else {
+        setAddressValid(false);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error validating address:", error);
+      setAddressValid(false);
+      return false;
+    }
   };
 
   const handleImageSubmit = (e) => {
@@ -78,10 +101,10 @@ export default function CreateListing() {
       }
       Promise.all(promises)
         .then((urls) => {
-          setFormData({
-            ...formData,
-            imageUrls: formData.imageUrls.concat(urls),
-          });
+          setFormData((prevData) => ({
+            ...prevData,
+            imageUrls: prevData.imageUrls.concat(urls),
+          }));
           setImageUploadError(false);
           setUploading(false);
         })
@@ -121,42 +144,46 @@ export default function CreateListing() {
   };
 
   const handleRemoveImage = (index) => {
-    setFormData({
-      ...formData,
-      imageUrls: formData.imageUrls.filter((_, i) => i !== index),
-    });
+    setFormData((prevData) => ({
+      ...prevData,
+      imageUrls: prevData.imageUrls.filter((_, i) => i !== index),
+    }));
   };
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { id, value, type, checked } = e.target;
 
     if (type === "checkbox") {
       if (id === "ownRoom" || id === "sharedRoom") {
-        setFormData({
-          ...formData,
+        setFormData((prevData) => ({
+          ...prevData,
           type: id === "ownRoom" ? "ownRoom" : "sharedRoom",
-        });
+        }));
       } else {
-        setFormData({
-          ...formData,
+        setFormData((prevData) => ({
+          ...prevData,
           [id]: checked,
-        });
+        }));
       }
     } else if (type === "select-one") {
-      setFormData({
-        ...formData,
+      setFormData((prevData) => ({
+        ...prevData,
         [id]: value,
-      });
+      }));
     } else if (type === "number" || type === "text" || type === "textarea") {
-      setFormData({
-        ...formData,
+      setFormData((prevData) => ({
+        ...prevData,
         [id]: value,
-      });
+      }));
     }
 
-    // Reset address validation on address change
     if (id === "address") {
-      setAddressValid(true); // Assuming it's valid initially, validation will update it
+      setFormData((prevData) => ({
+        ...prevData,
+        address: value,
+      }));
+      const isValid = await validateAddress(value);
+      setAddressValid(isValid);
     }
   };
 
@@ -170,7 +197,7 @@ export default function CreateListing() {
         return setError("Discount price must be lower than regular price");
 
       // Validate address before submitting
-      if (!validateAddress()) {
+      if (!(await validateAddress(formData.address))) {
         return setError("Please enter a valid address");
       }
 
@@ -246,10 +273,10 @@ export default function CreateListing() {
             className="border p-3 rounded-lg"
             id="leaseDates"
             required
-            pattern="^([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01])\/\d{4}\s-\s([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01])\/\d{4}$"
-            title="Please enter valid date in the format: MM/DD/YYYY - MM/DD/YYYY"
+            pattern="^([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01])\/\d{4}\s?-\s?([1-9]|0[1-9]|1[0-2])\/([1-9]|0[1-9]|[12]\d|3[01])\/\d{4}$"
             onChange={handleChange}
             value={formData.leaseDates}
+            title="Please enter valid date in the format: MM/DD/YYYY - MM/DD/YYYY"
           />
 
           <div className="flex gap-6 flex-wrap">
