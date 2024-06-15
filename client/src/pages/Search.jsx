@@ -336,6 +336,8 @@ export default function Search() {
             </button>
           )}
         </div>
+        Location of listings - Press markers to get correspondant listing,
+        refresh to show all filtered listings again
         <div id="map" style={{ height: "500px", width: "100%" }}></div>
       </div>
     </div>
