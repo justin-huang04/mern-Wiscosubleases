@@ -245,7 +245,7 @@ export default function CreateListing() {
           />
           <textarea
             type="text"
-            placeholder="Description, List contact, other ammenities, flexibilities"
+            placeholder="Description. MUST INCLUDE: Contact Info. Can include ammenities: laundry, nearby places, other flexibilities"
             className="border p-3 rounded-lg"
             id="description"
             required
