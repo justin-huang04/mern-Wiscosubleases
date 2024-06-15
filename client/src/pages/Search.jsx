@@ -2,6 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ListingItem from "../components/ListingItem";
 
+// Load Google Maps script
+const loadScript = (url) => {
+  const script = document.createElement("script");
+  script.src = url;
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
+};
+
 export default function Search() {
   const navigate = useNavigate();
   const [sidebardata, setSidebardata] = useState({
@@ -17,6 +26,7 @@ export default function Search() {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [filteredlistings, setFilteredlistings] = useState([]);
   const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
@@ -64,11 +74,66 @@ export default function Search() {
         setShowMore(false);
       }
       setListings(data);
+      setFilteredlistings(data);
       setLoading(false);
     };
 
     fetchListings();
   }, [location.search]);
+
+  useEffect(() => {
+    if (listings.length > 0) {
+      loadScript(
+        `https://maps.googleapis.com/maps/api/js?key=AIzaSyCEbvfaPXGTFbxQHr4CbxkqnUYIqm3F5uo&callback=initMap`
+      );
+      window.initMap = () => {
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 14,
+          center: { lat: 43.0731, lng: -89.4012 }, // Madison, Wisconsin
+        });
+
+        const geocoder = new google.maps.Geocoder();
+
+        listings.forEach((listing, index) => {
+          geocodeAddress(geocoder, map, listing, index);
+        });
+      };
+    }
+  }, [listings]);
+
+  const geocodeAddress = (geocoder, map, listing, index) => {
+    geocoder.geocode({ address: listing.address }, (results, status) => {
+      if (status === "OK") {
+        const marker = new google.maps.Marker({
+          map: map,
+          position: results[0].geometry.location,
+          title: listing.address,
+        });
+
+        marker.addListener("mouseover", () => {
+          document
+            .getElementById(`listing-${index}`)
+            .classList.add("highlight");
+        });
+
+        marker.addListener("mouseout", () => {
+          document
+            .getElementById(`listing-${index}`)
+            .classList.remove("highlight");
+        });
+
+        marker.addListener("click", () => {
+          setFilteredlistings(
+            listings.filter((l) => l.address === listing.address)
+          );
+        });
+      } else {
+        console.error(
+          "Geocode was not successful for the following reason: " + status
+        );
+      }
+    });
+  };
 
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
@@ -251,7 +316,7 @@ export default function Search() {
           Listing results:
         </h1>
         <div className="p-7 flex flex-wrap gap-4">
-          {!loading && listings.length === 0 && (
+          {!loading && filteredlistings.length === 0 && (
             <p className="text-xl text-slate-700">No listing found!</p>
           )}
           {loading && (
@@ -261,9 +326,11 @@ export default function Search() {
           )}
 
           {!loading &&
-            listings &&
-            listings.map((listing) => (
-              <ListingItem key={listing._id} listing={listing} />
+            filteredlistings &&
+            filteredlistings.map((listing, index) => (
+              <div key={listing._id} id={`listing-${index}`}>
+                <ListingItem listing={listing} />
+              </div>
             ))}
 
           {showMore && (
@@ -275,6 +342,7 @@ export default function Search() {
             </button>
           )}
         </div>
+        <div id="map" style={{ height: "500px", width: "100%" }}></div>
       </div>
     </div>
   );
