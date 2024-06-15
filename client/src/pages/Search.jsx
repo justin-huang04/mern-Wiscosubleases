@@ -336,9 +336,16 @@ export default function Search() {
             </button>
           )}
         </div>
-        Location of listings - Press markers to get the corresponding
-        listing(s), refresh to show all filtered listings again
-        <div id="map" style={{ height: "500px", width: "100%" }}></div>
+        {/* Conditional rendering for the map */}
+        {!loading && listings.length > 0 && (
+          <div>
+            <h2 className="text-lg font-semibold border-b p-3 text-slate-800">
+              Location of listings - Press markers to get the corresponding
+              listing(s), refresh to show all filtered listings again
+            </h2>
+            <div id="map" style={{ height: "500px", width: "100%" }}></div>
+          </div>
+        )}
       </div>
     </div>
   );
