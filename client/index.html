@@ -10,6 +10,39 @@
       async
       defer
     ></script>
+    <script>
+      function initMap() {
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 14,
+          center: { lat: -34.397, lng: 150.644 }, // Default coordinates, will be updated dynamically
+        });
+
+        const geocoder = new google.maps.Geocoder();
+
+        // Get the address from the DOM
+        const address = document.querySelector(".address")?.innerText.trim();
+
+        if (address) {
+          geocodeAddress(geocoder, map, address);
+        }
+      }
+
+      function geocodeAddress(geocoder, map, address) {
+        geocoder.geocode({ address: address }, (results, status) => {
+          if (status === "OK") {
+            map.setCenter(results[0].geometry.location);
+            new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location,
+            });
+          } else {
+            console.error(
+              "Geocode was not successful for the following reason: " + status
+            );
+          }
+        });
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

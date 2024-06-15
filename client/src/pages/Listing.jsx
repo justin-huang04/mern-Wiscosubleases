@@ -10,7 +10,6 @@ import {
   FaDoorClosed,
   FaFemale,
   FaMale,
-  FaMapMarkedAlt,
   FaMapMarkerAlt,
   FaParking,
   FaShare,
@@ -18,7 +17,14 @@ import {
 import { BiMaleFemale } from "react-icons/bi";
 import Contact from "../components/Contact";
 
-// https://sabe.io/blog/javascript-format-numbers-commas#:~:text=The%20best%20way%20to%20format,format%20the%20number%20with%20commas.
+// Load Google Maps script
+const loadScript = (url) => {
+  const script = document.createElement("script");
+  script.src = url;
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
+};
 
 export default function Listing() {
   SwiperCore.use([Navigation]);
@@ -51,6 +57,39 @@ export default function Listing() {
     };
     fetchListing();
   }, [params.listingId]);
+
+  useEffect(() => {
+    if (listing) {
+      loadScript(
+        `https://maps.googleapis.com/maps/api/js?key=AIzaSyCEbvfaPXGTFbxQHr4CbxkqnUYIqm3F5uo&callback=initMap`
+      );
+      window.initMap = () => {
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 14,
+          center: { lat: -34.397, lng: 150.644 }, // Default coordinates
+        });
+
+        const geocoder = new google.maps.Geocoder();
+        geocodeAddress(geocoder, map, listing.address);
+      };
+    }
+  }, [listing]);
+
+  const geocodeAddress = (geocoder, map, address) => {
+    geocoder.geocode({ address: address }, (results, status) => {
+      if (status === "OK") {
+        map.setCenter(results[0].geometry.location);
+        new google.maps.Marker({
+          map: map,
+          position: results[0].geometry.location,
+        });
+      } else {
+        console.error(
+          "Geocode was not successful for the following reason: " + status
+        );
+      }
+    });
+  };
 
   return (
     <main>
@@ -97,7 +136,7 @@ export default function Listing() {
                 ? `${listing.discountPrice.toLocaleString("en-US")} per month`
                 : `${listing.regularPrice.toLocaleString("en-US")} per month`}
             </p>
-            <p className="flex items-center mt-6 gap-2 text-slate-600  text-sm">
+            <p className="flex items-center mt-6 gap-2 text-slate-600 text-sm address">
               <FaMapMarkerAlt className="text-green-700" />
               {listing.address}
             </p>
@@ -138,14 +177,14 @@ export default function Listing() {
               <li className="flex items-center gap-1 whitespace-nowrap ">
                 <FaDoorClosed className="text-lg" />
                 {listing.bedrooms > 1
-                  ? `${listing.roommates} roommates `
-                  : `${listing.roommates} roommate `}
+                  ? `${listing.roommates} roommates`
+                  : `${listing.roommates} roommate`}
               </li>
               <li className="flex items-center gap-1 whitespace-nowrap ">
                 <FaBath className="text-lg" />
                 {listing.bathrooms > 1
-                  ? `${listing.bathrooms} baths `
-                  : `${listing.bathrooms} bath `}
+                  ? `${listing.bathrooms} baths`
+                  : `${listing.bathrooms} bath`}
               </li>
               <li className="flex items-center gap-1 whitespace-nowrap ">
                 <FaParking className="text-lg" />
@@ -155,12 +194,13 @@ export default function Listing() {
             {currentUser && listing.userRef !== currentUser._id && !contact && (
               <button
                 onClick={() => setContact(true)}
-                className="bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3"
+                className="bg-slate-700 text-white rounded-lg uppercase hover p-3"
               >
                 Contact Subleaser
               </button>
             )}
             {contact && <Contact listing={listing} />}
+            <div id="map" className="w-full h-96 mt-6"></div>
           </div>
         </div>
       )}
