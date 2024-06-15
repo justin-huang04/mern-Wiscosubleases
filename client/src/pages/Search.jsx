@@ -26,7 +26,6 @@ export default function Search() {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  const [filteredlistings, setFilteredlistings] = useState([]);
   const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
@@ -74,7 +73,6 @@ export default function Search() {
         setShowMore(false);
       }
       setListings(data);
-      setFilteredlistings(data);
       setLoading(false);
     };
 
@@ -123,9 +121,7 @@ export default function Search() {
         });
 
         marker.addListener("click", () => {
-          setFilteredlistings(
-            listings.filter((l) => l.address === listing.address)
-          );
+          setListings(listings.filter((l) => l.address === listing.address));
         });
       } else {
         console.error(
@@ -316,7 +312,7 @@ export default function Search() {
           Listing results:
         </h1>
         <div className="p-7 flex flex-wrap gap-4">
-          {!loading && filteredlistings.length === 0 && (
+          {!loading && listings.length === 0 && (
             <p className="text-xl text-slate-700">No listing found!</p>
           )}
           {loading && (
@@ -326,11 +322,9 @@ export default function Search() {
           )}
 
           {!loading &&
-            filteredlistings &&
-            filteredlistings.map((listing, index) => (
-              <div key={listing._id} id={`listing-${index}`}>
-                <ListingItem listing={listing} />
-              </div>
+            listings &&
+            listings.map((listing) => (
+              <ListingItem key={listing._id} listing={listing} />
             ))}
 
           {showMore && (
