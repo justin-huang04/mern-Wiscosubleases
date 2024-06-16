@@ -25,6 +25,7 @@ export default function Search() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [allListings, setAllListings] = useState([]); // Store all listings
   const [listings, setListings] = useState([]);
   const [showMore, setShowMore] = useState(false);
 
@@ -72,6 +73,7 @@ export default function Search() {
       } else {
         setShowMore(false);
       }
+      setAllListings(data); // Save fetched listings in allListings
       setListings(data);
       setLoading(false);
     };
@@ -80,24 +82,24 @@ export default function Search() {
   }, [location.search]);
 
   useEffect(() => {
-    if (listings.length > 0) {
+    if (allListings.length > 0) {
       loadScript(
         `https://maps.googleapis.com/maps/api/js?key=AIzaSyCEbvfaPXGTFbxQHr4CbxkqnUYIqm3F5uo&callback=initMap`
       );
       window.initMap = () => {
         const map = new google.maps.Map(document.getElementById("map"), {
           zoom: 14,
-          center: { lat: 43.0731, lng: -89.4012 }, // Madison, Wisconsin
+          center: { lat: 43.0731, lng: -89.4012 }, // Example coordinates
         });
 
         const geocoder = new google.maps.Geocoder();
 
-        listings.forEach((listing, index) => {
+        allListings.forEach((listing, index) => {
           geocodeAddress(geocoder, map, listing, index);
         });
       };
     }
-  }, [listings]);
+  }, [allListings]);
 
   const geocodeAddress = (geocoder, map, listing, index) => {
     geocoder.geocode({ address: listing.address }, (results, status) => {
@@ -121,7 +123,8 @@ export default function Search() {
         });
 
         marker.addListener("click", () => {
-          setListings(listings.filter((l) => l.address === listing.address));
+          setListings(allListings.filter((l) => l.address === listing.address));
+          setShowMore(false);
         });
       } else {
         console.error(

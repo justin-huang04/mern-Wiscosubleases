@@ -30,6 +30,8 @@ export default function Header() {
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
         <div className="header">
           <Link to="/" className="flex items-center">
+            <img src="logo.jpg" alt="Logo" className="h-10 mr-2" />{" "}
+            {/* Update the path to the image */}
             <h1 className="font-bold text-lg sm:text-xl flex flex-wrap">
               <span className="text-white">Wisco</span>
               <span className="text-red-200">Subleases</span>
