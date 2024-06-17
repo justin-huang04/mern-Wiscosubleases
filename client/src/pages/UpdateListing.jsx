@@ -20,10 +20,11 @@ export default function UpdateListing() {
     description: "",
     address: "",
     type: "ownRoom",
+    contact: "",
     bedrooms: 1,
     bathrooms: 1,
-    regularPrice: 50,
-    discountPrice: 0,
+    regularPrice: 450,
+    discountPrice: "",
     priceNegotiable: true,
     parking: false,
     gender: "Any gender",
@@ -286,6 +287,15 @@ export default function UpdateListing() {
             value={formData.leaseDates}
             title="Please enter valid date in the format: MM/DD/YYYY - MM/DD/YYYY"
           />
+          <textarea
+            type="text"
+            placeholder="Contact Info: Phone Number, Email, Snapchat etc."
+            className="border p-3 rounded-lg"
+            id="contact"
+            required
+            onChange={handleChange}
+            value={formData.contact}
+          />
           <div className="flex gap-6 flex-wrap">
             <div className="flex gap-2">
               <input
@@ -378,16 +388,16 @@ export default function UpdateListing() {
                   <span className="text-xs">($ / month)</span>
                 )}
               </div>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="priceNegotiable"
-                className="w-5"
-                onChange={handleChange}
-                checked={formData.priceNegotiable}
-              />
-              <span>Price Negotiable (List a Discounted Price)</span>
+              <div className="flex gap-2">
+                <input
+                  type="checkbox"
+                  id="priceNegotiable"
+                  className="w-5"
+                  onChange={handleChange}
+                  checked={formData.priceNegotiable}
+                />
+                <span>Price Negotiable (List a Discounted Price)</span>
+              </div>
             </div>
             {formData.priceNegotiable && (
               <div className="flex items-center gap-2">

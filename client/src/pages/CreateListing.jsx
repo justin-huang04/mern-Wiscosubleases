@@ -19,10 +19,11 @@ export default function CreateListing() {
     description: "",
     address: "",
     type: "ownRoom",
+    contact: "",
     roommates: 1,
     bathrooms: 1,
-    regularPrice: 50,
-    discountPrice: 0,
+    regularPrice: 450,
+    discountPrice: "",
     priceNegotiable: false,
     parking: false,
     gender: "Any Gender",
@@ -245,7 +246,7 @@ export default function CreateListing() {
           />
           <textarea
             type="text"
-            placeholder="Description. MUST INCLUDE: Contact Info. Can include ammenities: laundry, nearby places, other flexibilities"
+            placeholder="Description. Can include ammenities: laundry, nearby places, other flexibilities"
             className="border p-3 rounded-lg"
             id="description"
             required
@@ -269,7 +270,7 @@ export default function CreateListing() {
           )}
           <input
             type="text"
-            placeholder="Available Sublease Dates (MM/DD/YYYY - MM/DD/YYYY)"
+            placeholder="Available Dates: (MM/DD/YYYY - MM/DD/YYYY)"
             className="border p-3 rounded-lg"
             id="leaseDates"
             required
@@ -278,7 +279,15 @@ export default function CreateListing() {
             value={formData.leaseDates}
             title="Please enter valid date in the format: MM/DD/YYYY - MM/DD/YYYY"
           />
-
+          <textarea
+            type="text"
+            placeholder="Contact Info: Phone Number, Email, Snapchat etc."
+            className="border p-3 rounded-lg"
+            id="contact"
+            required
+            onChange={handleChange}
+            value={formData.contact}
+          />
           <div className="flex gap-6 flex-wrap">
             <div className="flex gap-2">
               <input
@@ -371,16 +380,16 @@ export default function CreateListing() {
                   <span className="text-xs">($ / month)</span>
                 )}
               </div>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="priceNegotiable"
-                className="w-5"
-                onChange={handleChange}
-                checked={formData.priceNegotiable}
-              />
-              <span>Price Negotiable (List a Discounted Price)</span>
+              <div className="flex gap-2">
+                <input
+                  type="checkbox"
+                  id="priceNegotiable"
+                  className="w-5"
+                  onChange={handleChange}
+                  checked={formData.priceNegotiable}
+                />
+                <span>Price Negotiable (List a discounted price below)</span>
+              </div>
             </div>
             {formData.priceNegotiable && (
               <div className="flex items-center gap-2">

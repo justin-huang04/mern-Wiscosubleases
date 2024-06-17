@@ -191,15 +191,10 @@ export default function Listing() {
                 {listing.parking ? "Parking spot" : "No Parking"}
               </li>
             </ul>
-            {currentUser && listing.userRef !== currentUser._id && !contact && (
-              <button
-                onClick={() => setContact(true)}
-                className="bg-slate-700 text-white rounded-lg uppercase hover p-3"
-              >
-                Contact Subleaser
-              </button>
-            )}
-            {contact && <Contact listing={listing} />}
+            <p className="text-slate-800">
+              <span className="font-semibold text-black">Contact: </span>
+              {listing.contact}
+            </p>
             <div id="map" className="w-full h-96 mt-6"></div>
           </div>
         </div>
