@@ -18,7 +18,7 @@ export default function About() {
       </p>
       <h1 className="text-3xl font-bold mb-4 text-slate-800">Meet the team</h1>
       <p className="mb-4 text-slate-700">
-        Wiscosubleases was developed and is maintained by Justin Huang. A third
+        Wiscosubleases was developed and is maintained by Justin Huang - A third
         year computer science/data science student who was inspired to build
         this website after he had his own problems with subleasing.
       </p>
@@ -28,7 +28,12 @@ export default function About() {
       <p className="mb-4 text-slate-700">Email: Justinhuang773@gmail.com</p>
       <p className="mb-4 text-slate-700">
         LinkedIn:{" "}
-        <a href="https://www.linkedin.com/in/justin-huang-4a626a262">here</a>
+        <a
+          href="https://www.linkedin.com/in/justin-huang-4a626a262"
+          style={{ color: "blue" }}
+        >
+          here
+        </a>
       </p>
     </div>
   );
