@@ -1,7 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 
-const BUILD_ENV = process.env.REACT_APP_BUILD_ENV || "development";
+const BUILD_ENV =
+  process.env.REACT_APP_BUILD_ENV || "any-default-local-build_env";
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
