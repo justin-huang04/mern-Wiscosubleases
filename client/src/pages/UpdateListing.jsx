@@ -8,6 +8,7 @@ import {
 import { app } from "../firebase";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import imageCompression from "browser-image-compression";
 
 export default function UpdateListing() {
   const { currentUser } = useSelector((state) => state.user);
@@ -23,8 +24,8 @@ export default function UpdateListing() {
     contact: "",
     bedrooms: 1,
     bathrooms: 1,
-    regularPrice: 450,
-    discountPrice: "",
+    regularPrice: 500,
+    discountPrice: 350,
     priceNegotiable: true,
     parking: false,
     gender: "Any gender",
@@ -136,28 +137,41 @@ export default function UpdateListing() {
   };
 
   const storeImage = async (file) => {
-    return new Promise((resolve, reject) => {
-      const storage = getStorage(app);
-      const fileName = new Date().getTime() + file.name;
-      const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress}% done`);
-        },
-        (error) => {
-          reject(error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            resolve(downloadURL);
-          });
-        }
-      );
-    });
+    try {
+      // Compress the image
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 2,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      });
+
+      return new Promise((resolve, reject) => {
+        const storage = getStorage(app);
+        const fileName = new Date().getTime() + compressedFile.name;
+        const storageRef = ref(storage, fileName);
+        const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log(`Upload is ${progress}% done`);
+          },
+          (error) => {
+            reject(error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    } catch (error) {
+      console.error("Error compressing image:", error);
+      throw error;
+    }
   };
 
   const handleRemoveImage = (index) => {
