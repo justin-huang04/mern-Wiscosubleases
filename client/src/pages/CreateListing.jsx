@@ -21,7 +21,7 @@ export default function CreateListing() {
     address: "",
     type: "ownRoom",
     contact: "",
-    roommates: 0,
+    roommates: 1,
     bathrooms: 1,
     regularPrice: 500,
     discountPrice: 350,

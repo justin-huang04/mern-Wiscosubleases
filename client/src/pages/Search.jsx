@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import ListingItem from "../components/ListingItem";
 
 // Load Google Maps script
@@ -13,6 +13,7 @@ const loadScript = (url) => {
 
 export default function Search() {
   const navigate = useNavigate();
+  const location = useLocation(); // Ensure useLocation is used
   const [sidebardata, setSidebardata] = useState({
     searchTerm: "",
     type: "all",
@@ -25,9 +26,10 @@ export default function Search() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [allListings, setAllListings] = useState([]); // Store all listings
   const [listings, setListings] = useState([]);
   const [showMore, setShowMore] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
+  const [totalListings, setTotalListings] = useState(0);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -62,29 +64,28 @@ export default function Search() {
       });
     }
 
-    const fetchListings = async () => {
+    const fetchListings = async (startIndex = 0, append = false) => {
       setLoading(true);
-      setShowMore(false);
-      const searchQuery = urlParams.toString();
+      const searchQuery = `${urlParams.toString()}&startIndex=${startIndex}&limit=10`; // Set the limit to 10
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
-      if (data.length > 9) {
-        setShowMore(true);
+      if (append) {
+        setListings((prevListings) => [...prevListings, ...data]);
       } else {
-        setShowMore(false);
+        setListings(data);
       }
-      setAllListings(data); // Save fetched listings in allListings
-      setListings(data);
+      setTotalListings(data.total); // Assuming the backend sends total listings count
       setLoading(false);
+      setShowMore(data.length === 10); // If less than 10 listings are returned, hide the Show More button
     };
 
     fetchListings();
   }, [location.search]);
 
   useEffect(() => {
-    if (allListings.length > 0) {
+    if (listings.length > 0) {
       loadScript(
-        `https://maps.googleapis.com/maps/api/js?key=AIzaSyCEbvfaPXGTFbxQHr4CbxkqnUYIqm3F5uo&callback=initMap`
+        "https://maps.googleapis.com/maps/api/js?key=AIzaSyCEbvfaPXGTFbxQHr4CbxkqnUYIqm3F5uo&callback=initMap"
       );
       window.initMap = () => {
         const map = new google.maps.Map(document.getElementById("map"), {
@@ -94,12 +95,12 @@ export default function Search() {
 
         const geocoder = new google.maps.Geocoder();
 
-        allListings.forEach((listing, index) => {
+        listings.forEach((listing, index) => {
           geocodeAddress(geocoder, map, listing, index);
         });
       };
     }
-  }, [allListings]);
+  }, [listings]);
 
   const geocodeAddress = (geocoder, map, listing, index) => {
     geocoder.geocode({ address: listing.address }, (results, status) => {
@@ -123,7 +124,7 @@ export default function Search() {
         });
 
         marker.addListener("click", () => {
-          setListings(allListings.filter((l) => l.address === listing.address));
+          setListings(listings.filter((l) => l.address === listing.address));
           setShowMore(false);
         });
       } else {
@@ -178,6 +179,20 @@ export default function Search() {
 
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
+  };
+
+  const onShowMoreClick = () => {
+    setStartIndex((prevIndex) => prevIndex + 10);
+    const urlParams = new URLSearchParams(location.search);
+    const searchQuery = `${urlParams.toString()}&startIndex=${
+      startIndex + 10
+    }&limit=10`;
+    fetch(`/api/listing/get?${searchQuery}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setListings((prevListings) => [...prevListings, ...data]);
+        setShowMore(data.length === 10);
+      });
   };
 
   return (
@@ -316,7 +331,7 @@ export default function Search() {
 
           {!loading &&
             listings &&
-            listings.map((listing) => (
+            listings.map((listing, index) => (
               <ListingItem key={listing._id} listing={listing} />
             ))}
 
