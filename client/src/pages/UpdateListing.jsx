@@ -363,7 +363,7 @@ export default function UpdateListing() {
               <input
                 type="number"
                 id="roommates"
-                min="1"
+                min="0"
                 max="10"
                 required
                 className="p-3 border border-gray-300 rounded-lg"
