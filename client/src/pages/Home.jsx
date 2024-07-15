@@ -75,6 +75,14 @@ export default function Home() {
           <div className="text-gray-200 text-base sm:text-lg mt-4">
             Need to get rid of a room? Sign in and post a listing.
             <br />
+            <Link
+              to={"/profile"}
+              className="text-xs sm:text-sm text-white font-bold bg-red-800 py-2 px-4 mt-6 rounded-lg hover:bg-red-700"
+            >
+              Post Sublease
+            </Link>
+            <br />
+            <br />
             Need a room? Explore student listings below.
           </div>
           <Link
