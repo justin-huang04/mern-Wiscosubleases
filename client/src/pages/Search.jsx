@@ -21,7 +21,7 @@ export default function Search() {
     priceNegotiable: false,
     sort: "createdAt",
     order: "desc",
-    maxPrice: 1000,
+    maxPrice: 1500,
   });
 
   const [loading, setLoading] = useState(false);
@@ -58,7 +58,7 @@ export default function Search() {
         priceNegotiable: priceNegotiableFromUrl === "true" ? true : false,
         sort: sortFromUrl || "createdAt",
         order: orderFromUrl || "desc",
-        maxPrice: maxPriceFromUrl ? parseInt(maxPriceFromUrl) : 1000,
+        maxPrice: maxPriceFromUrl ? parseInt(maxPriceFromUrl) : 1500,
       });
     }
 
@@ -171,23 +171,13 @@ export default function Search() {
     urlParams.set("sort", sidebardata.sort);
     urlParams.set("order", sidebardata.order);
     urlParams.set("maxPrice", sidebardata.maxPrice);
+
+    if (sidebardata.priceNegotiable) {
+      urlParams.set("discountPrice", true);
+    }
+
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
-  };
-
-  const onShowMoreClick = async () => {
-    const numberOfListings = listings.length;
-    const startIndex = numberOfListings;
-    const urlParams = new URLSearchParams(location.search);
-    urlParams.set("startIndex", startIndex);
-
-    const searchQuery = urlParams.toString();
-    const res = await fetch(`/api/listing/get?${searchQuery}`);
-    const data = await res.json();
-    if (data.length < 9) {
-      setShowMore(false);
-    }
-    setListings([...listings, ...data]);
   };
 
   return (

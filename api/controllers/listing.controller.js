@@ -100,7 +100,7 @@ export const getListings = async (req, res, next) => {
 
     let priceCondition = { regularPrice: { $lte: maxPrice } };
 
-    if (req.query.discountPrice) {
+    if (req.query.discountPrice === "true") {
       priceCondition = {
         $or: [
           { regularPrice: { $lte: maxPrice } },

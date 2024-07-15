@@ -16,7 +16,7 @@ export default function Home() {
     const fetchPriceNegotiableListings = async () => {
       try {
         const res = await fetch(
-          "/api/listing/get?priceNegotiable=true&limit=4"
+          "/api/listing/get?priceNegotiable=true&maxPrice=1500&limit=4"
         );
         const data = await res.json();
         setPriceNegotiableListings(data);
@@ -27,7 +27,9 @@ export default function Home() {
     };
     const fetchOwnRoomListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?type=ownRoom&limit=4");
+        const res = await fetch(
+          "/api/listing/get?type=ownRoom&maxPrice=1500&limit=4"
+        );
         const data = await res.json();
         setOwnRoomListings(data);
         fetchSharedRoomListings();
@@ -38,7 +40,9 @@ export default function Home() {
 
     const fetchSharedRoomListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?type=sharedRoom&limit=4");
+        const res = await fetch(
+          "/api/listing/get?type=sharedRoom&maxPrice=1500limit=4"
+        );
         const data = await res.json();
         setSharedRoomListings(data);
       } catch (error) {
