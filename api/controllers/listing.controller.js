@@ -66,11 +66,6 @@ export const getListings = async (req, res, next) => {
   try {
     const limit = parseInt(req.query.limit) || 10; // Has to be 1 bigger than showMore in Search.jsx
     const startIndex = parseInt(req.query.startIndex) || 0;
-    let priceNegotiable = req.query.priceNegotiable;
-
-    if (priceNegotiable === undefined || priceNegotiable === "false") {
-      priceNegotiable = { $in: [false, true] };
-    }
 
     let gender = req.query.gender;
 
@@ -98,20 +93,16 @@ export const getListings = async (req, res, next) => {
 
     const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice) : 1000;
 
-    let priceCondition = { regularPrice: { $lte: maxPrice } };
-
-    if (req.query.discountPrice === "true") {
-      priceCondition = {
-        $or: [
-          { regularPrice: { $lte: maxPrice } },
-          { discountPrice: { $lte: maxPrice } },
-        ],
-      };
-    }
+    // Adjusted price condition
+    const priceCondition = {
+      $or: [
+        { regularPrice: { $lte: maxPrice } },
+        { priceNegotiable: true, discountPrice: { $lte: maxPrice } },
+      ],
+    };
 
     const listings = await Listing.find({
       name: { $regex: searchTerm, $options: "i" },
-      priceNegotiable,
       gender,
       parking,
       type,
