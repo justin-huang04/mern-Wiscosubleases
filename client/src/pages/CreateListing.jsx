@@ -354,7 +354,7 @@ export default function CreateListing() {
               <input
                 type="number"
                 id="roommates"
-                min="0"
+                min="1"
                 max="10"
                 required
                 className="p-3 border border-gray-300 rounded-lg"
