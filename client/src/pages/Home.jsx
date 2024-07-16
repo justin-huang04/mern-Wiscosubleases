@@ -16,7 +16,7 @@ export default function Home() {
     const fetchPriceNegotiableListings = async () => {
       try {
         const res = await fetch(
-          "/api/listing/get?priceNegotiable=true&maxPrice=1500&limit=4"
+          "/api/listing/get?priceNegotiable=true&maxPrice=1500&limit=3"
         );
         const data = await res.json();
         setPriceNegotiableListings(data);
